@@ -1,0 +1,11 @@
+{
+  "name": "common-lib",
+  "version": "1.0.0",
+  "description": "Common library shared between applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peter Virtue",
+  "license": "ISC"
+}
