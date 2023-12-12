@@ -1,0 +1,12 @@
+.git
+.gitignore
+.dockerignore
+dist
+node_modules
+coverage
+.env
+.editorconfig
+Dockerfile
+README.md
+tslint.json
+nodemon.json

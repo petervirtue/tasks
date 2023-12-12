@@ -18,6 +18,20 @@ services:
     networks:
       - tasks
 
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./api/src:/app/src
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - tasks
+
 networks:
   tasks:
     driver: bridge
