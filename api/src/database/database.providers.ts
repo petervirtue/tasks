@@ -16,7 +16,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         entities: [User],
-        synchronize: true,
+        synchronize: process.env.DB_SYNCHRONIZE === 'true',
       });
 
       return dataSource.initialize();
