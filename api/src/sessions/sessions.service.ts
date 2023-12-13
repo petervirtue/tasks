@@ -14,8 +14,7 @@ export class SessionsService {
   }
 
   async create(data: DeepPartial<Session>): Promise<Session> {
-    return this.repository.create(data);
-    // return this.repository.save(this.repository.create(data));
+    return this.repository.save(this.repository.create(data));
   }
 
   async delete(id: number): Promise<void> {

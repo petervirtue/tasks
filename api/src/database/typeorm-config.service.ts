@@ -15,7 +15,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       dropSchema: false,
       logging: process.env.NODE_ENV !== 'production',
       keepConnectionAlive: true,
-      entities: [__dirname + '/../**/*.entity.{.ts,.js}'],
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
       cli: {
         entitiesDir: 'src',

@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { Match } from 'src/common/validators/match.validator';
 
 export class AuthRegisterDto {
   @IsNotEmpty()
@@ -23,5 +24,6 @@ export class AuthRegisterDto {
   password: string;
 
   @IsNotEmpty()
+  @Match('password')
   confirmPassword: string;
 }

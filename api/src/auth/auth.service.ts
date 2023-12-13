@@ -10,8 +10,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthProvidersEnum } from './auth-providers.enum';
-import bcrypt from 'bcryptjs';
-import ms from 'ms';
+import * as bcrypt from 'bcrypt';
+import ms, { StringValue } from 'ms';
 import { SessionsService } from 'src/sessions/sessions.service';
 import { User } from 'src/users/entities/user.entity';
 import { Session } from 'src/sessions/entities/session.entity';
@@ -84,6 +84,22 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterDto): Promise<LoginResponse> {
+    const emailCheckUser = await this.usersService.findOneBy({
+      email: dto.email,
+    });
+
+    if (emailCheckUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: 'alreadyInUse',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const hashedPassword = await this.hashPassword(dto.password);
 
     const user = await this.usersService.create({
@@ -152,7 +168,7 @@ export class AuthService {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
     });
-    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+    const tokenExpires = Date.now() + ms(tokenExpiresIn as StringValue);
 
     const [token, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
