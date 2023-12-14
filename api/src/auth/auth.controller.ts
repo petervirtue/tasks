@@ -1,11 +1,12 @@
 import {
+  Delete,
   Controller,
   Post,
   Body,
   HttpStatus,
   HttpCode,
   UseGuards,
-  Req,
+  Request,
   SerializeOptions,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { LoginResponse } from './types/login-response.type';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { JwtRefreshGuard } from './guards/refresh.guard';
+import { JwtGuard } from './guards/access.guard';
 
 @Controller({
   path: 'auth',
@@ -24,28 +26,35 @@ export class AuthController {
   @SerializeOptions({ groups: ['me'] })
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: AuthEmailLoginDto): Promise<LoginResponse> {
+  public async login(@Body() dto: AuthEmailLoginDto): Promise<LoginResponse> {
     return await this.authService.authenticate(dto);
   }
 
   @SerializeOptions({ groups: ['me'] })
   @Post('register')
   @HttpCode(HttpStatus.OK)
-  async register(@Body() dto: AuthRegisterDto): Promise<LoginResponse> {
+  public async register(@Body() dto: AuthRegisterDto): Promise<LoginResponse> {
     return await this.authService.register(dto);
   }
 
   @SerializeOptions({ groups: ['me'] })
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  refresh(@Req() request: any): Promise<Omit<LoginResponse, 'user'>> {
+  refresh(@Request() request: any): Promise<Omit<LoginResponse, 'user'>> {
     return this.authService.refresh({ sessionId: request.user.sessionId });
   }
 
-  // @Post('logout')
-  // @HttpCode(HttpStatus.OK)
-  // @UseGuards(AccessTokenGuard)
-  // async logout(@Req() req: any) {
-  //   this.authService.logout(req.user['sub']);
-  // }
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtGuard)
+  public async logout(@Request() request: any): Promise<void> {
+    return this.authService.logout(request.user.sessionId);
+  }
+
+  @Delete('profile')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtGuard)
+  public async delete(@Request() request: any): Promise<void> {
+    return this.authService.delete(request.user);
+  }
 }

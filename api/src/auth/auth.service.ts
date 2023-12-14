@@ -133,7 +133,7 @@ export class AuthService {
       id: data.sessionId,
     });
 
-    if (!session) {
+    if (!session || !session.user) {
       throw new UnauthorizedException();
     }
 
@@ -153,6 +153,14 @@ export class AuthService {
       tokenExpires,
       refreshToken,
     };
+  }
+
+  async logout(data: Pick<JwtRefreshPayload, 'sessionId'>): Promise<void> {
+    return this.sessionsService.delete(data.sessionId);
+  }
+
+  async delete(user: User): Promise<void> {
+    return this.usersService.delete(user.id);
   }
 
   private async hashPassword(password: string): Promise<string> {

@@ -13,9 +13,7 @@ export class Session {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, {
-    eager: true,
-  })
+  @ManyToOne(() => User, { eager: true })
   @Index()
   user: User;
 

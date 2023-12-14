@@ -1,11 +1,13 @@
 import { Exclude, Expose } from 'class-transformer';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { Session } from 'src/sessions/entities/session.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -38,6 +40,9 @@ export class User {
   @Index()
   @Column({ nullable: true })
   lastName: string | null;
+
+  @OneToMany(() => Session, (session) => session.user)
+  sessions: [Session];
 
   //   @ManyToOne(() => Role, {
   //     eager: true,
