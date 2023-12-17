@@ -17,14 +17,16 @@ import { User } from 'src/users/entities/user.entity';
 import { Session } from 'src/sessions/entities/session.entity';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { JwtRefreshPayload } from './types/jwt-refresh-payload.type';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    private usersService: UsersService,
-    private configService: ConfigService,
-    private sessionsService: SessionsService,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
+    private readonly mailerService: MailerService,
+    private readonly sessionsService: SessionsService,
   ) {}
 
   async authenticate(dto: AuthEmailLoginDto): Promise<LoginResponse> {
@@ -109,14 +111,24 @@ export class AuthService {
       lastName: dto.lastName,
     });
 
-    // NOTE(petervirtue) - Generate email confirmation and send
-
     const session = await this.sessionsService.create({ user });
-
     const { token, tokenExpires, refreshToken } = await this.getTokens(
       user.id,
       session.id,
     );
+
+    // Comment this back in one remote resources are established.
+    // const emailHash = await this.jwtService.signAsync(
+    //   {
+    //     confirmEmailUserId: user.id,
+    //   },
+    //   {
+    //     secret: this.configService.getOrThrow('auth.confirmEmailSecret'),
+    //     expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires'),
+    //   },
+    // );
+
+    // await this.mailerService.sendConfirmEmail(user.email, emailHash);
 
     return {
       token,

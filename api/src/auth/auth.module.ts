@@ -7,12 +7,14 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { SessionsModule } from 'src/sessions/sessions.module';
 import { PassportModule } from '@nestjs/passport';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   imports: [
     UsersModule,
     SessionsModule,
     PassportModule,
+    MailerModule,
     JwtModule.register({}),
   ],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy],

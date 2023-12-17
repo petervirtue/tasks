@@ -7,13 +7,15 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { MailerModule } from './mailer/mailer.module';
 import appConfig from './config/app.config';
+import mailerConfig from './config/mailer.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [authConfig, appConfig],
+      load: [authConfig, appConfig, mailerConfig],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
@@ -23,6 +25,7 @@ import appConfig from './config/app.config';
     }),
     AuthModule,
     UsersModule,
+    MailerModule,
     SessionsModule,
   ],
 })
