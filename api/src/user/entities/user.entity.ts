@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -47,6 +47,6 @@ export class User {
   @Column({ type: 'enum', enum: Provider })
   provider: string;
 
-  @OneToMany(() => Secret, (secret) => secret.user, { cascade: true })
-  secrets: Secret[];
+  @OneToOne(() => Secret, (secret) => secret.user, { cascade: true })
+  secret: Secret;
 }
