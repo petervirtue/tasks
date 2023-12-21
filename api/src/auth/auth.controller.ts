@@ -13,7 +13,10 @@ import { AuthResponse } from './types/auth-response';
 import { LoginDto } from './dto/login.dto';
 import { RefreshGuard } from './guards/refresh.guard';
 
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

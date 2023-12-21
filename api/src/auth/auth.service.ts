@@ -16,6 +16,8 @@ import { randomBytes } from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthResponse } from './types/auth-response';
+import { Provider } from './enums/provider.enum';
+import { QueryFailedError } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -49,19 +51,24 @@ export class AuthService {
   }
 
   async register(data: RegisterDto): Promise<AuthResponse> {
-    const hashedPassword = await this.hash(data.password);
+    const { password, ...filteredData } = data;
+    const userPartial = { ...filteredData, provider: Provider.CREDENTIALS };
+    const hashedPassword = await this.hash(password);
 
     try {
-      const user = await this.userService.create({
-        ...data,
-        password: hashedPassword,
-      });
+      const user = await this.userService.create(userPartial, hashedPassword);
 
       // Send verification email
 
       return await this.createAuthResponse(user);
     } catch (error) {
-      // Add layer here to account for trying to duplicate usernames or emails
+      if (error instanceof QueryFailedError) {
+        const match = (error as any).detail.match(
+          /Key \(([^)]+)\)=\([^)]+\) already exists/,
+        );
+
+        throw new BadRequestException(`This ${match[1]} is already in use.`);
+      }
 
       throw new InternalServerErrorException(
         'An internal error has occurred. Please contact engineering.',

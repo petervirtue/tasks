@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { Provider } from '../enums/provider.enum';
 
 export class RegisterDto {
   @IsNotEmpty()
@@ -13,6 +14,9 @@ export class RegisterDto {
 
   @IsNotEmpty()
   locale: string = 'en-US';
+
+  @IsNotEmpty()
+  provider: Provider = Provider.CREDENTIALS;
 
   @IsNotEmpty()
   /**

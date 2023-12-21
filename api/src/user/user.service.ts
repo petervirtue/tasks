@@ -7,7 +7,6 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Secret } from 'src/auth/entities/secret.entity';
-import { RegisterDto } from 'src/auth/dto/register.dto';
 
 @Injectable()
 export class UserService {
@@ -17,15 +16,15 @@ export class UserService {
     private readonly secretRepository: Repository<Secret>,
   ) {}
 
-  async create(data: RegisterDto | DeepPartial<User>): Promise<User> {
+  async create(data: DeepPartial<User>, password: string): Promise<User> {
     return await this.repository.manager.transaction(async (entityManager) => {
       const createdUser = this.repository.create(data);
       const user = await entityManager.save(createdUser);
 
-      if (data instanceof RegisterDto) {
+      if (password) {
         const secret = this.secretRepository.create({
           user,
-          password: data.password,
+          password: password,
         });
 
         await entityManager.save(Secret, secret);
@@ -37,10 +36,8 @@ export class UserService {
 
   async findOneById(id: string): Promise<User> {
     const user = await this.repository.findOne({
-      where: { id },
-      relations: {
-        secret: true,
-      },
+      where: { id: id },
+      relations: ['secret'],
     });
 
     if (!user || !user.secret) {
@@ -76,7 +73,7 @@ export class UserService {
 
   async updateRefreshToken(id: string, refreshToken: string): Promise<User> {
     const user = await this.repository.findOne({
-      where: { id },
+      where: { id: id },
       relations: {
         secret: true,
       },

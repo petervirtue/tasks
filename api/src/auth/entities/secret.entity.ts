@@ -1,5 +1,11 @@
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Secret {
@@ -31,5 +37,6 @@ export class Secret {
   userId: string;
 
   @OneToOne(() => User, (user) => user.secret, { onDelete: 'CASCADE' })
+  @JoinColumn()
   user: User;
 }

@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Secret } from 'src/auth/entities/secret.entity';
 import { Provider } from 'src/auth/enums/provider.enum';
 import {
@@ -47,6 +48,7 @@ export class User {
   @Column({ type: 'enum', enum: Provider })
   provider: string;
 
+  @Exclude()
   @OneToOne(() => Secret, (secret) => secret.user, { cascade: true })
   secret: Secret;
 }

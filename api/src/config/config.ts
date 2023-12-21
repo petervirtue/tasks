@@ -1,16 +1,9 @@
 import { Transform } from 'class-transformer';
-import {
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUrl,
-  Matches,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class Config {
   @IsEnum(['development', 'production'])
-  NODE_ENV: 'development' | 'production';
+  NODE_ENV: 'development' | 'production' = 'production';
 
   // Application
   @IsString()
@@ -22,7 +15,7 @@ export class Config {
   @IsString()
   APP_API_PREFIX: string = '/api';
 
-  @IsUrl()
+  // @IsUrl()
   PUBLIC_URL: string;
 
   // Database
@@ -67,14 +60,8 @@ export class Config {
   @IsString()
   MAIL_FROM?: string = 'noreply@localhost';
 
-  @IsUrl()
   @IsOptional()
-  @Matches(/^smtp:\/\//)
+  // @IsUrl()
+  // @Matches(/^smtp:\/\//)
   MAIL_URL?: string;
-
-  // Redis
-  @IsUrl()
-  @IsOptional()
-  @Matches(/^redis:\/\//)
-  REDIS_URL?: string;
 }

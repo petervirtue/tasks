@@ -10,8 +10,8 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
-    private readonly configService: ConfigService<Config>,
     private readonly authService: AuthService,
+    readonly configService: ConfigService<Config>,
   ) {
     super({
       secretOrKey: configService.getOrThrow<string>('REFRESH_SECRET'),
